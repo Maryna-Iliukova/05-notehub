@@ -1,12 +1,14 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createNote, type CreateNotePayload } from '../../services/noteService';
 import css from './NoteForm.module.css';
 import type { NoteTag } from '../../types/note';
 
 interface NoteFormProps {
-  onSubmit: (data: { title: string; content: string; tag: NoteTag }) => void;
-  onCancel: () => void;
+  onSubmit: (data: CreateNotePayload) => void;
+  onClose: () => void;
 }
 
 const validationSchema = Yup.object({
@@ -22,7 +24,17 @@ const validationSchema = Yup.object({
     .required('Tag is required'),
 });
 
-const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, onCancel }) => {
+const NoteForm: React.FC<NoteFormProps> = ({ onClose }) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      onClose();
+    },
+  });
+
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -31,7 +43,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, onCancel }) => {
     },
     validationSchema,
     onSubmit: (values) => {
-      onSubmit(values);
+      mutation.mutate(values);
     },
   });
 
@@ -112,7 +124,7 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, onCancel }) => {
         <button
           type="button"
           className={css.cancelButton}
-          onClick={onCancel}
+          onClick={onClose}
           tabIndex={0}
         >
           Cancel
@@ -120,9 +132,9 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, onCancel }) => {
         <button
           type="submit"
           className={css.submitButton}
-          disabled={!formik.isValid || formik.isSubmitting}
+          disabled={!formik.isValid || formik.isSubmitting || mutation.isPending}
         >
-          Create note
+          {mutation.isPending ? 'Creating...' : 'Create note'}
         </button>
       </div>
     </form>

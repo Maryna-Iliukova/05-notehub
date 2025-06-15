@@ -10,8 +10,6 @@ interface NoteModalProps {
   children?: ReactNode;
 }
 
-const modalRoot = document.getElementById('modal-root') as HTMLElement;
-
 const NoteModal: React.FC<NoteModalProps> = ({ onClose, onCreateNote }) => {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -25,23 +23,30 @@ const NoteModal: React.FC<NoteModalProps> = ({ onClose, onCreateNote }) => {
         onClose();
       }
     };
+
+    // 🔒 Disable scroll
+    document.body.style.overflow = 'hidden';
+
     window.addEventListener('keydown', onKeyDown);
+
     return () => {
+      document.body.style.overflow = '';
       window.removeEventListener('keydown', onKeyDown);
     };
   }, [onClose]);
 
   return ReactDOM.createPortal(
-    <div className={css.backdrop}
+    <div
+      className={css.backdrop}
       role="dialog"
       aria-modal="true"
       onClick={handleBackdropClick}
     >
       <div className={css.modal}>
-        <NoteForm onCancel={onClose} onSubmit={onCreateNote} />
+        <NoteForm onClose={onClose} onSubmit={onCreateNote} />
       </div>
     </div>,
-    modalRoot
+    document.body
   );
 };
 
