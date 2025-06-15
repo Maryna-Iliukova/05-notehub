@@ -6,7 +6,7 @@ import css from './NoteList.module.css';
 
 interface NoteListProps {
   notes: Note[];
-  onDeleteNote: (id: string) => void;
+  onDeleteNote: (id: number) => void;
 }
 
 const NoteList: React.FC<NoteListProps> = ({ notes }) => {

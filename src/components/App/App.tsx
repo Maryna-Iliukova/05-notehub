@@ -36,7 +36,7 @@ const App: React.FC = () => {
     placeholderData: (prev) => prev,
   });
 
-  const handleDeleteNote = async (id: string) => {
+  const handleDeleteNote = async (id: number) => {
     try {
       await deleteNote(id);
       queryClient.invalidateQueries({ queryKey: ['notes'] });
