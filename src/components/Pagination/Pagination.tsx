@@ -16,13 +16,13 @@ const Pagination: React.FC<PaginationProps> = ({
   if (pageCount <= 1) return null;
 
   const handlePageClick = (event: { selected: number }) => {
-    onPageChange(event.selected);
+    onPageChange(event.selected + 1);
   };
 
   return (
     <ReactPaginate
       pageCount={pageCount}
-      forcePage={currentPage}
+      forcePage={currentPage - 1}
       onPageChange={handlePageClick}
       containerClassName={css.pagination}
       pageClassName={css.pageItem}

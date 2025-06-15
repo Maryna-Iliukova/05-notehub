@@ -22,7 +22,7 @@ const App: React.FC = () => {
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['notes', { search: searchQuery, page }],
-    queryFn: () => fetchNotes({ search: searchQuery, page: page + 1, perPage }),
+    queryFn: () => fetchNotes({ search: searchQuery, page, perPage }),
     placeholderData: (previousData) => previousData,
   });
   
@@ -70,8 +70,8 @@ const App: React.FC = () => {
       <main className={css.main}>
         {isLoading && <Loader />}
 
-        {data && data.results && (
-  <NoteList notes={data.results} onDeleteNote={handleDeleteNote} />
+        {data && data.notes && (
+  <NoteList notes={data.notes} onDeleteNote={handleDeleteNote} />
 )}
 
 
@@ -93,3 +93,4 @@ const App: React.FC = () => {
 };
 
 export default App;
+

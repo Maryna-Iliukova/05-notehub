@@ -11,6 +11,7 @@ const axiosInstance = axios.create({
   },
 });
 
+
 export interface FetchNotesParams {
   page: number;
   perPage: number;
@@ -18,7 +19,7 @@ export interface FetchNotesParams {
 }
 
 export interface FetchNotesResponse {
-  results: Note[];
+  notes: Note[];
   total: number;
   totalPages: number;
   page: number;
@@ -49,7 +50,6 @@ export const fetchNotes = async ({
     perPage,
     ...(search ? { search } : {}),
   };
-
   const response: AxiosResponse<FetchNotesResponse> = await axiosInstance.get('/', { params });
   return response.data;
 };
